@@ -1,0 +1,4 @@
+startup --output_user_root=.bazel
+
+## Build
+build --cxxopt -std=c++14
