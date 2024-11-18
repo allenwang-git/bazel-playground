@@ -23,8 +23,14 @@ py-cov:
 clean:
   - bazelisk clean
 
+# C tasks
 c-pub:
   - bazelisk run //cc:c_pub
 
 c-sub:
   - bazelisk run //cc:c_sub
+
+c-integ-test:
+  - bazelisk test //cc:integration-tests --test_output=all --cache_test_results=no
+
+# CPP tasks

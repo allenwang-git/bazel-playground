@@ -20,3 +20,24 @@ cc_binary(
     srcs = ["sub.c"],
     deps = [":c_idl"],
 )
+
+
+load("@python_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+py_test(
+    name = "integration-tests",
+    srcs = glob(["test/integration/**"]),
+    deps = [
+        requirement("pytest"),
+        requirement("pytest-timeout"),
+        requirement("docker"),
+    ],
+    data= [
+        ":c_sub",
+        ":c_pub",
+    ],
+    tags = ["no-coverage"],
+    main = "__init__.py",
+    visibility = ["//visibility:public"],
+
+)

@@ -26,6 +26,7 @@ Options:
 ## Install Bazel
 - Install through [Bazelisk](https://github.com/bazelbuild/bazelisk/releases).
   ```
+    wget https://github.com/bazelbuild/bazelisk/releases/download/v1.23.0/bazelisk-amd64.deb
     sudo dpkg -i bazelisk-amd64.deb
     which bazelisk
   ```
