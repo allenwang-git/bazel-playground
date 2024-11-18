@@ -1,0 +1,22 @@
+# By default ccInfo functions have been included
+cc_library(
+    name = "c_idl",
+    srcs = [
+        "idl/HelloWorldData.h",
+        "idl/HelloWorldData.c",
+    ],
+    deps = ["@cyclonedds"],
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "c_pub",
+    srcs = ["pub.c"],
+    deps = [":c_idl"],
+)
+
+cc_binary(
+    name = "c_sub",
+    srcs = ["sub.c"],
+    deps = [":c_idl"],
+)
