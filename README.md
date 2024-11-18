@@ -1,20 +1,29 @@
 # bazel-playground
+
 bazel project to learn bazel ecosystem
 
 ## QuickStart
 
 ### Dependencies
+
 - [Bazel](#install-bazel)
 - lcov
-  ```
+  
+  ```bash
   sudo apt install lcov
   ```
 
+- python 3.7+
+- cmake 3.16.0+
+
 ### Define Tasks
+
 Go to [tasks.yaml](./tasks.yaml) and add new tasks.
 
 ### Run Tasks
+
 Use the CLI tool `/run` to run predefined tasks:
+
 ```bash
 Usage: ./run <task-name>
 Options:
@@ -24,32 +33,42 @@ Options:
 ```
 
 ## Install Bazel
+
 - Install through [Bazelisk](https://github.com/bazelbuild/bazelisk/releases).
-  ```
+  
+  ```bash
     wget https://github.com/bazelbuild/bazelisk/releases/download/v1.23.0/bazelisk-amd64.deb
     sudo dpkg -i bazelisk-amd64.deb
     which bazelisk
   ```
+
 - Add `.bazeliskrc` to choose Bazel version
-  ```
+
+  ```bash
     BAZELISK_HOME=.bazelisk
     USE_BAZEL_VERSION=6.5.0
   ```
+
 - Check Bazel version
-  ```
+  
+  ```bash
   bazel version
   bazelisk version
   ```
 
 ## Set up Bazel Workspace
+
 - Create WORKSPACE.bazel
 - Import common used functions
-  ```
+  
+  ```bash
     load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
     load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
   ```
+
 - Import needed dependencies of Bazel project, eg. bazel python rules:
-  ```
+  
+  ```bash
     http_archive(
         name = "rules_python",
         sha256 = "9d04041ac92a0985e344235f5d946f71ac543f1b1565f2cdbc9a2aaee8adf55b",
@@ -80,14 +99,17 @@ Options:
 
     install_deps()
   ```
+
 - Create `BUILD.bazel` to mark the repo as a bazel pkg
 - Create `.bazelrc` to specify the bazel operation configurations
 
 ## Set up Bazel Python Environment
+
 - Import python dependencies into bazel [workspace](#set-up-bazel-workspace)
 - Create `requirements.txt` to specify needed python packages
 - Create `requiremens_lock.txt` and add Bazel rule to update python requirements
-  ```
+
+  ```bash
     load("@rules_python//python:pip.bzl", "compile_pip_requirements")
     compile_pip_requirements(
         name = "py-deps",
@@ -96,8 +118,9 @@ Options:
         requirements_txt = "//:requirements_lock.txt",
     )
   ```
+
 - Generate contents into `requirements_lock.txt`
-  ```
+  
+  ```bash
     ./run py-deps
   ```
-
