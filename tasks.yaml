@@ -30,7 +30,12 @@ c-pub:
 c-sub:
   - bazelisk run //cc:c_sub
 
-c-integ-test:
-  - bazelisk test //cc:integration-tests --test_output=all --cache_test_results=no
-
 # CPP tasks
+cc-pub:
+  - bazelisk run //cc:cc_pub --verbose_failures
+
+cc-sub:
+  - bazelisk run //cc:cc_sub
+
+cc-integ-test:
+  - bazelisk test //cc:integration-tests --test_output=all --cache_test_results=no

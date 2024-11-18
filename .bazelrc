@@ -1,7 +1,7 @@
 startup --output_user_root=.bazel
 
 ## Build
-build --cxxopt -std=c++14
+build --cxxopt -std=c++17
 
 ## Coverage
 coverage --combined_report=lcov

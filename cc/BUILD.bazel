@@ -21,9 +21,33 @@ cc_binary(
     deps = [":c_idl"],
 )
 
+## C++
+cc_library(
+    name = "cc_idl",
+    srcs = [
+        "idl/HelloWorldData.hpp",
+        "idl/HelloWorldData.cpp",
+    ],
+    deps = ["@cyclonedds-cxx"],
+    visibility = ["//visibility:public"],
+)
 
+cc_binary(
+    name = "cc_pub",
+    srcs = ["pub.cpp"],
+    deps = [":cc_idl"],
+)
+
+cc_binary(
+    name = "cc_sub",
+    srcs = ["sub.cpp"],
+    deps = [":cc_idl"],
+)
+
+# Integration Test
 load("@python_deps//:requirements.bzl", "requirement")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+
 py_test(
     name = "integration-tests",
     srcs = glob(["test/integration/**"]),
@@ -35,6 +59,8 @@ py_test(
     data= [
         ":c_sub",
         ":c_pub",
+        ":cc_pub",
+        ":cc_sub",
     ],
     tags = ["no-coverage"],
     main = "__init__.py",

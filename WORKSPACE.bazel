@@ -52,8 +52,16 @@ rules_foreign_cc_dependencies()
 ## CycloneDDS
 http_archive(
     name = "cyclonedds",
-    # sha256 = "6041f1374ff32ba711564374ad8e007aef77f71561a7ce784123b9b4b88614fc",
+    sha256 = "495ace40b51025d1465bd10a8c6c0f36a1a3a03a97f8e6d4582a06086644c3b8",
     strip_prefix = "cyclonedds-0.11.0",
     build_file = "//external_bazel_templates:BUILD.bazel.cyclonedds",
     url = "https://github.com/allenwang-git/cyclonedds/archive/refs/tags/0.11.0.tar.gz",
+)
+
+http_archive(
+    name = "cyclonedds-cxx",
+    sha256 = "336319064796e73dd0b3d366fc6dea0d796ddba946506b22a8ca488a2100859f",
+    strip_prefix = "cyclonedds-cxx-0.11.0.1",
+    build_file = "//external_bazel_templates:BUILD.bazel.cyclonedds-cxx",
+    url = "https://github.com/allenwang-git/cyclonedds-cxx/archive/refs/tags/0.11.0.1.tar.gz",
 )

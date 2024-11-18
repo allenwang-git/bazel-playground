@@ -11,6 +11,10 @@ filegroup(
 
 cmake(
     name = "cyclonedds",
+    build_args = [
+        "--target install",
+        "-j `nproc`",
+    ],
     cache_entries = {
         # For a faster build
         "BUILD_EXAMPLES": "OFF",
