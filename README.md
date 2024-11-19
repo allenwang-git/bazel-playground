@@ -18,11 +18,11 @@ bazel project to learn bazel ecosystem
 
 ### Define Tasks
 
-Go to [tasks.yaml](./tasks.yaml) and add new tasks.
+Go to [`tasks.yaml`](./tasks.yaml) and add new tasks.
 
 ### Run Tasks
 
-Use the CLI tool `/run` to run predefined tasks:
+Use the CLI tool [`run`](run) to run predefined tasks:
 
 ```bash
 Usage: ./run <task-name>
@@ -42,7 +42,7 @@ Options:
     which bazelisk
   ```
 
-- Add `.bazeliskrc` to choose Bazel version
+- Add [`.bazeliskrc`](.bazeliskrc) to choose Bazel version
 
   ```bash
     BAZELISK_HOME=.bazelisk
@@ -100,14 +100,17 @@ Options:
     install_deps()
   ```
 
-- Create `BUILD.bazel` to mark the repo as a bazel pkg
-- Create `.bazelrc` to specify the bazel operation configurations
+- Create [`BUILD.bazel`](BUILD.bazel) to mark the repo as a bazel pkg
+- Create [`.bazelrc`](.bazelrc) to specify the bazel operation configurations
 
 ## Set up Bazel Python Environment
 
-- Import python dependencies into bazel [workspace](#set-up-bazel-workspace)
-- Create `requirements.txt` to specify needed python packages
-- Create `requiremens_lock.txt` and add Bazel rule to update python requirements
+- Import python dependencies into bazel [`WORKSPACE`](#set-up-bazel-workspace)
+- Create [`requirements.txt`](requirements.txt) to specify needed python packages
+  
+  Unlike C/C++, all Python dependencies cannot be import into WORKSPACE directly, instead, they need to be imported through `requirements.txt`
+
+- Create an empty `requiremens_lock.txt` and add Bazel rule to update python requirements
 
   ```bash
     load("@rules_python//python:pip.bzl", "compile_pip_requirements")
@@ -119,8 +122,53 @@ Options:
     )
   ```
 
-- Generate contents into `requirements_lock.txt`
+- Generate contents into [`requiremens_lock.txt`](requirements_lock.txt)
   
   ```bash
     ./run py-deps
   ```
+
+## Import External Packages
+
+Take cyclonedds for example:
+
+- Add external package into [`WORKSPACE`](WORKSPACE.bazel):
+  
+  ```bazel
+  http_archive(
+    name = "cyclonedds",
+    sha256 = "495ace40b51025d1465bd10a8c6c0f36a1a3a03a97f8e6d4582a06086644c3b8",
+    strip_prefix = "cyclonedds-0.11.0",
+    build_file = "//external_bazel_templates:BUILD.bazel.cyclonedds",
+    url = "https://github.com/allenwang-git/cyclonedds/archive/refs/tags/0.11.0.tar.gz",
+  )
+  ```
+
+- Add customized [`BUILD`](external_bazel_templates/BUILD.bazel.cyclonedds) file for external package
+
+- Refer to it when define bazel target:
+
+  ```bazel
+  cc_library(
+    name = "c_idl",
+    srcs = [
+        "idl/HelloWorldData.h",
+        "idl/HelloWorldData.c",
+    ],
+    deps = ["@cyclonedds"],
+    visibility = ["//visibility:public"],
+  )
+  ```
+
+## Run Test and Coverage in Bazel
+
+For cc codes, defined `cc_test` targets, while for python codes, define `py_test` targets.
+
+To run all tests in this repo, use `bazelisk test //... <options>`.
+
+NOTES: If use `py_test` to do integration test for cc codes, the tests cannot be used to calculate coverage for cc codes, unless use native `pytest` command. In other words, `cc_binary` targets cannot be test directly.
+
+To calculate unit test coverage, use `bazelisk coverage //python/... <options>` or `bazelisk coverage //cc/... <options>`
+
+To generate coverage report, use `genhtml` command.
+
