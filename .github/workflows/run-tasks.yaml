@@ -14,10 +14,10 @@ jobs:
     strategy:
       matrix:
         task: [
-          py-test, 
-          py-cov,
-          cc-integ-test,
-          cc-tar
+          ./run py-test, 
+          ./run py-cov,
+          ./run cc-integ-test,
+          ./run cc-tar
         ]
       fail-fast: true
 
@@ -29,11 +29,11 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
-          sudo apt install lcov &&
+          sudo apt install -y lcov &&
           wget https://github.com/bazelbuild/bazelisk/releases/download/v1.23.0/bazelisk-amd64.deb &&
           sudo dpkg -i bazelisk-amd64.deb &&
           which bazelisk
 
       # Run tasks
       - name: Run tests
-        run: ./run {{ matrix.task }}
+        run: {{ matrix.task }}
