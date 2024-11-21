@@ -9,7 +9,7 @@ on:
       - main  # Also trigger on pull requests targeting main branch
 
 jobs:
-  build:
+  tasks:
     runs-on: [self-hosted, X64, Linux]
     strategy:
       matrix:
@@ -25,6 +25,8 @@ jobs:
       # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          clean: false
 
       # Install dependencies
       - name: Install dependencies
