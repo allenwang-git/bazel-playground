@@ -14,10 +14,10 @@ jobs:
     strategy:
       matrix:
         task: [
-          ./run py-test, 
-          ./run py-cov,
-          ./run cc-integ-test,
-          ./run cc-tar
+          py-test, 
+          py-cov,
+          cc-integ-test,
+          cc-tar
         ]
       fail-fast: true
 
@@ -36,4 +36,4 @@ jobs:
 
       # Run tasks
       - name: Run tests
-        run: {{ matrix.task }}
+        run: ./run ${{ matrix.task }}
