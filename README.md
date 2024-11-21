@@ -164,11 +164,95 @@ Take cyclonedds for example:
 
 For cc codes, defined `cc_test` targets, while for python codes, define `py_test` targets.
 
-To run all tests in this repo, use `bazelisk test //... <options>`.
+- To run all tests in this repo, use `bazelisk test //... <options>`.
 
-NOTES: If use `py_test` to do integration test for cc codes, the tests cannot be used to calculate coverage for cc codes, unless use native `pytest` command. In other words, `cc_binary` targets cannot be test directly.
+  NOTES: If use `py_test` to do integration test for cc codes, the tests cannot be used to calculate coverage for cc codes, unless use native `pytest` command. In other words, `cc_binary` targets cannot be test directly.
 
-To calculate unit test coverage, use `bazelisk coverage //python/... <options>` or `bazelisk coverage //cc/... <options>`
+- To calculate unit test coverage, use `bazelisk coverage //python/... <options>` or `bazelisk coverage //cc/... <options>`
 
-To generate coverage report, use `genhtml` command.
+- To generate coverage report, use `genhtml` command.
 
+## Package Rules
+
+To package in Bazel, [rules_pkg](https://bazelbuild.github.io/rules_pkg) is needed.
+
+- Import rules_pkg into WORKSPACE:
+
+  ```bazel
+  http_archive(
+      name = "rules_pkg",
+      urls = [
+          "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.9.0/rules_pkg-0.9.0.tar.gz",
+          "https://github.com/bazelbuild/rules_pkg/releases/download/0.9.0/rules_pkg-0.9.0.tar.gz",
+      ],
+      sha256 = "335632735e625d408870ec3e361e192e99ef7462315caa887417f4d88c4c8fb8",
+  )
+
+  load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+
+  rules_pkg_dependencies()
+  ```
+
+- Define bazel targets:
+
+  ```bash
+  pkg_tar(
+    name = "cc_tar",
+    srcs = [
+        "//cc:cc_pub",
+        "//cc:cc_sub",
+        ":cyclonedds-deps",
+    ],
+    extension = "tar.gz",
+    mode = "0555", # r-xr-xr-x
+    package_file_name = "cc-pub-sub-{cc_cpu}-{compiler}-{compilation_mode}-{version}.tar.gz",
+    package_variables = ":pkg_vars",
+    visibility = ["//visibility:public"],
+  )
+  ```
+
+  Package Variables:
+  - `version`: passed from CLI argument
+  - `cc-cpu`, `compier`, `compilation_mode`: passed from toolchain info
+
+  All package variables are defined in target [`pkg_vars`](pkg/pkg_vars.bzl):
+
+  ```bash
+  def _pkg_vars(ctx): # Functions starting with '_' are private functions and cannot be imported into other files
+    """var wrapper for both version and toolchain vars"""
+    version = version_from_cli_impl(ctx)
+    toolchain = names_from_toolchains_impl(ctx)
+
+    values = {}
+    values.update(version)
+    values.update(toolchain)
+    return PackageVariablesInfo(values = values)
+
+pkg_vars = rule(
+    implementation = _pkg_vars,
+    # Going forward, the preferred way to depend on a toolchain through the
+    # toolchains attribute. The current C++ toolchains, however, are still not
+    # using toolchain resolution, so we have to depend on the toolchain
+    # directly.
+    # TODO(https://github.com/bazelbuild/bazel/issues/7260): Delete the
+    # _cc_toolchain attribute.
+    attrs = {
+        "_cc_toolchain": attr.label(
+            default = Label(
+                "@rules_cc//cc:current_cc_toolchain",
+            ),
+        ),
+    },
+    toolchains = ["@rules_cc//cc:toolchain_type"],
+    incompatible_use_toolchain_transition = True,
+    # For version
+    build_setting =config.string(flag=True),
+    provides = [PackageVariablesInfo],
+  )
+  ```
+
+- Build package with `bazelisk build` command and version number:
+
+  ```bash
+  bazelisk build //pkg:cc_tar --//pkg:pkg_vars=0.0.1
+  ```

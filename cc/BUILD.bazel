@@ -36,12 +36,14 @@ cc_binary(
     name = "cc_pub",
     srcs = ["pub.cpp"],
     deps = [":cc_idl"],
+    visibility = ["//visibility:public"],
 )
 
 cc_binary(
     name = "cc_sub",
     srcs = ["sub.cpp"],
     deps = [":cc_idl"],
+    visibility = ["//visibility:public"],
 )
 
 # Integration Test

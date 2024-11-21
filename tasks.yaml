@@ -39,3 +39,6 @@ cc-sub:
 
 cc-integ-test:
   - bazelisk test //cc:integration-tests --test_output=all --cache_test_results=no
+
+cc-tar:
+  - bazelisk build //pkg:cc_tar --//pkg:pkg_vars="0.0.1"
