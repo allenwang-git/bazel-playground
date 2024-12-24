@@ -228,7 +228,7 @@ To package in Bazel, [rules_pkg](https://bazelbuild.github.io/rules_pkg) is need
     values.update(toolchain)
     return PackageVariablesInfo(values = values)
 
-pkg_vars = rule(
+  pkg_vars = rule(
     implementation = _pkg_vars,
     # Going forward, the preferred way to depend on a toolchain through the
     # toolchains attribute. The current C++ toolchains, however, are still not
