@@ -166,6 +166,63 @@ Take cyclonedds for example:
   )
   ```
 
+## Setup BuildBuddy
+
+- Assuming a buildbuddy account has been created, if not, go to https://www.buildbuddy.io/ to create one.
+
+- Get the buildbuddy API key from https://app.buildbuddy.io/settings/org/api-keys
+
+  <img src="./media/buildbuddy-api-key.png" width="600" />
+
+- Add buildbuddy configurations into [.bazelrc](./.bazelrc):
+  ```bash
+  build --bes_results_url=https://app.buildbuddy.io/invocation/
+  build --bes_backend=grpcs://remote.buildbuddy.io
+  build --build_metadata=REPO_URL=https://github.com/<repo>.git
+  build --build_metadata=USER=<user-name>
+  ```
+
+- Add buildbuddy api key into git global config
+  ```bash
+  git config --global buildbuddy.api-key <org-api-key>
+  ```
+
+- Create [buildbuddy credential helper script](./buildbuddy_credential_helper) and add following contents:
+  ```bash
+  #!/bin/bash
+
+  set -euo pipefail
+
+  if [[ -z "${BUILD_BUDDY_API_KEY:-}" ]]; then
+    BUILD_BUDDY_API_KEY=$(git config buildbuddy.api-key)
+  fi
+
+  echo '{
+    "headers": {
+      "x-buildbuddy-api-key": ["'"${BUILD_BUDDY_API_KEY}"'"]
+    }
+  }'
+  ```
+
+- Add credential helper into [`./bazelrc`](./.bazelrc)
+  ```bash
+  build --credential_helper=%workspace%/buildbuddy_credential_helper
+  ```
+
+- Now buildbuddy is all set and all build results will be uploaded to your remote buildbuddy cloud. eg.
+  ```bash
+  INFO: Streaming build results to: https://app.buildbuddy.io/invocation/6fe45c1d-a7e9-4335-a4e3-a0c7c47cf8ef
+  INFO: Analyzed target //cc:cc_sub (1 packages loaded, 2 targets configured).
+  INFO: Found 1 target...
+  Target //cc:cc_sub up-to-date:
+    bazel-bin/cc/cc_sub
+  INFO: Elapsed time: 19.744s, Critical Path: 19.45s
+  INFO: 13 processes: 8 internal, 5 linux-sandbox.
+  INFO: Running command line: bazel-bin/cc/cc_sub
+  INFO: Streaming build results to: https://app.buildbuddy.io/invocation/6fe45c1d-a7e9-4335-a4e3-a0c7c47cf8ef
+  INFO: Build completed successfully, 13 total actions
+  ```
+
 ## Run Test and Coverage in Bazel
 
 For cc codes, defined `cc_test` targets, while for python codes, define `py_test` targets.
@@ -270,11 +327,15 @@ To package in Bazel, [rules_pkg](https://bazelbuild.github.io/rules_pkg) is need
 
 ## Pre-commit
 
+- Make sure the pre-commit tool is installed.
+
+- Create pre-commit [config file](./.pre-commit-config.yaml) and add pre-commit hooks.
+
 - To run pre-commit check:
 
-```bash
-./run pre-commit
-```
+  ```bash
+  ./run pre-commit
+  ```
 - To add more pre-commit-hooks: https://pre-commit.com/hooks.html
 
 - For more info about pre-commit tool: https://pre-commit.com/index.html

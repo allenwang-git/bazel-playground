@@ -2,6 +2,12 @@ startup --output_user_root=.bazel
 
 ## Build
 build --cxxopt -std=c++17
+# BuildBuddy
+build --bes_results_url=https://app.buildbuddy.io/invocation/
+build --bes_backend=grpcs://remote.buildbuddy.io
+build --build_metadata=REPO_URL=https://github.com/allenwang-git/bazel-playground.git
+build --build_metadata=USER=allen-wang
+build --credential_helper=%workspace%/buildbuddy_credential_helper
 
 ## Coverage
 coverage --combined_report=lcov
