@@ -1,6 +1,24 @@
 # bazel-playground
 
 bazel project to learn bazel ecosystem
+<!-- TOC depthfrom:2 -->
+
+- [QuickStart](#quickstart)
+    - [Dependencies](#dependencies)
+    - [Define Tasks](#define-tasks)
+    - [Run Tasks](#run-tasks)
+- [Install Bazel](#install-bazel)
+- [Set up Bazel Workspace](#set-up-bazel-workspace)
+- [Set up Bazel Python Environment](#set-up-bazel-python-environment)
+- [Import External Packages](#import-external-packages)
+- [Setup BuildBuddy](#setup-buildbuddy)
+- [Run Test and Coverage in Bazel](#run-test-and-coverage-in-bazel)
+- [Package Rules](#package-rules)
+- [Pre-commit](#pre-commit)
+- [CI Workflow](#ci-workflow)
+
+<!-- /TOC -->
+
 
 ## QuickStart
 
