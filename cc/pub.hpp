@@ -11,11 +11,11 @@
 
 /* Include data type and specific traits to be used with the C++ DDS API. */
 #include "idl/HelloWorldData.hpp"
-        
+
 using namespace org::eclipse::cyclonedds;
 
 void pub_impl(const std::string topic_name) {
-        
+
     std::cout << "=== [Publisher] Create writer." << std::endl;
 
     /* First, a domain participant is needed.

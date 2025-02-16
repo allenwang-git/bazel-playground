@@ -11,8 +11,8 @@ mkdir -p ./tmp
 touch ./tmp/c_sh_test ./tmp/cc_sh_test
 
 # Run the C tests
-timeout ${timeout}s ./c_sub >> ./tmp/c_sh_test & 
-timeout ${timeout}s ./c_pub >> ./tmp/c_sh_test & 
+timeout ${timeout}s ./c_sub >> ./tmp/c_sh_test &
+timeout ${timeout}s ./c_pub >> ./tmp/c_sh_test &
 wait
 cat ./tmp/c_sh_test | grep "\[Subscriber\] Received : Message (1, Hello World)" # Check if the C tests passed
 c_test_return_code=$?
@@ -27,8 +27,8 @@ else
 fi
 
 # Run the C++ tests
-timeout ${timeout}s ./cc_sub >> ./tmp/cc_sh_test & 
-timeout ${timeout}s ./cc_pub >> ./tmp/cc_sh_test & 
+timeout ${timeout}s ./cc_sub >> ./tmp/cc_sh_test &
+timeout ${timeout}s ./cc_pub >> ./tmp/cc_sh_test &
 wait
 cat ./tmp/cc_sh_test | grep "\[Subscriber\] Message received: \[userID: 1, message: Hello World\]" # Check if the C++ tests passed
 

@@ -10,10 +10,10 @@
 // utils that's provided by the bazel to r/w files
 bazel::tools::cpp::runfiles::Runfiles* runfiles = bazel::tools::cpp::runfiles::Runfiles::CreateForTest();
 
-// Run a binary 
+// Run a binary
 int run_binary(const std::string& binary) {
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(binary.c_str(), "r"), pclose);
-    
+
     if (!pipe) {
         std::cerr << "ERROR: Failed to run binary";
         return 1;
@@ -59,4 +59,3 @@ TEST(CcIntegrationTest, CppTest) {
     file.close();
     ASSERT_THAT(cpp_sub_out, testing::HasSubstr("[Subscriber] Message received: [userID: 1, message: Hello World]"));
 }
-

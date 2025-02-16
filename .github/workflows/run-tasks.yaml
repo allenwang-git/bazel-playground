@@ -1,3 +1,4 @@
+---
 name: Run tasks
 
 on:
@@ -14,9 +15,10 @@ jobs:
     strategy:
       matrix:
         task: [
-          py-test, 
+          py-test,
           py-cov,
-          cc-integ-test,
+          cc-test,
+          cc-cov,
           cc-tar
         ]
       fail-fast: true

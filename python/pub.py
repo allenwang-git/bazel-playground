@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from cyclonedds.idl import IdlStruct
 import cyclonedds.idl.annotations as annotate
+from cyclonedds.idl import IdlStruct
 
 
 # Define a HelloWorld datatype with one member, data, with as type 'string'
@@ -11,20 +11,21 @@ import cyclonedds.idl.annotations as annotate
 class HelloWorld(IdlStruct, typename="HelloWorld.Msg"):
     data: str
 
+
+import time
+
+from cyclonedds.core import Policy, Qos
 from cyclonedds.domain import DomainParticipant
 from cyclonedds.pub import DataWriter, Publisher
 from cyclonedds.topic import Topic
-from cyclonedds.core import Policy, Qos
 from cyclonedds.util import duration
-
-import time
 
 # Qos seetings
 qos = Qos(
     Policy.Reliability.Reliable(duration(microseconds=60)),
     Policy.Deadline(duration(microseconds=10)),
     Policy.Durability.TransientLocal,
-    Policy.History.KeepLast(10)
+    Policy.History.KeepLast(10),
 )
 
 # Create a DomainParticipant, your entrypoint to DDS
@@ -32,7 +33,7 @@ qos = Qos(
 domain_participant = DomainParticipant(domain_id=11)
 
 # Create a Topic with topic name "Hello" and as datatype "HelloWorld" structs.
-topic = Topic(domain_participant, 'Hello', HelloWorld, qos=qos)
+topic = Topic(domain_participant, "Hello", HelloWorld, qos=qos)
 
 # Create a Publisher
 publisher = Publisher(domain_participant)

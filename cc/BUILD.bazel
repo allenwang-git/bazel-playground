@@ -34,7 +34,7 @@ cc_library(
 
 cc_binary(
     name = "cc_pub",
-    srcs = ["pub.cpp"],
+    srcs = ["pub.cpp", "pub.hpp"],
     deps = [":cc_idl"],
     visibility = ["//visibility:public"],
 )

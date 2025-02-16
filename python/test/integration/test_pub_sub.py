@@ -1,6 +1,8 @@
-import pytest
-import time
 import subprocess
+import time
+
+import pytest
+
 
 @pytest.mark.timeout(60)
 def test_python_pub_sub():
@@ -19,10 +21,5 @@ def test_python_pub_sub():
     sub.wait()
 
     # check logs
-    assert (
-        "Sent Msg" in pub.stdout.read()
-    ), "Publisher did not send correct data."
-    assert (
-        "All msg received.\n" in sub.stdout.read()
-    ), "Subscriber did not receive correct data."
-
+    assert "Sent Msg" in pub.stdout.read(), "Publisher did not send correct data."
+    assert "All msg received.\n" in sub.stdout.read(), "Subscriber did not receive correct data."

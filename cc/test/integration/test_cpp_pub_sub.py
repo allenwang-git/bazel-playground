@@ -1,6 +1,8 @@
-import pytest
-import time
 import subprocess
+import time
+
+import pytest
+
 
 @pytest.mark.timeout(60)
 def test_python_pub_sub():
@@ -25,4 +27,3 @@ def test_python_pub_sub():
     assert (
         "Message received: [userID: 1, message: Hello World]" in sub.stdout.read()
     ), "Subscriber did not receive correct data."
-

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from cyclonedds.idl import IdlStruct
 import cyclonedds.idl.annotations as annotate
+from cyclonedds.idl import IdlStruct
 
 
 # Define a HelloWorld datatype with one member, data, with as type 'string'
@@ -12,22 +12,21 @@ class HelloWorld(IdlStruct, typename="HelloWorld.Msg"):
     data: str
 
 
-from cyclonedds.core import  Qos, Policy
+from cyclonedds.core import Policy, Qos
 from cyclonedds.domain import DomainParticipant
+from cyclonedds.sub import DataReader, Subscriber
 from cyclonedds.topic import Topic
-from cyclonedds.sub import Subscriber, DataReader
 from cyclonedds.util import duration
-
 
 qos = Qos(
     Policy.Reliability.Reliable(duration(microseconds=60)),
     Policy.Deadline(duration(microseconds=10)),
     Policy.Durability.TransientLocal,
-    Policy.History.KeepLast(10)
+    Policy.History.KeepLast(10),
 )
 
 domain_participant = DomainParticipant(domain_id=11)
-topic = Topic(domain_participant, 'Hello', HelloWorld, qos=qos)
+topic = Topic(domain_participant, "Hello", HelloWorld, qos=qos)
 subscriber = Subscriber(domain_participant)
 reader = DataReader(domain_participant, topic)
 

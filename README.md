@@ -41,7 +41,7 @@ Options:
 ## Install Bazel
 
 - Install through [Bazelisk](https://github.com/bazelbuild/bazelisk/releases).
-  
+
   ```bash
     wget https://github.com/bazelbuild/bazelisk/releases/download/v1.23.0/bazelisk-amd64.deb
     sudo dpkg -i bazelisk-amd64.deb
@@ -56,7 +56,7 @@ Options:
   ```
 
 - Check Bazel version
-  
+
   ```bash
   bazel version
   bazelisk version
@@ -66,14 +66,14 @@ Options:
 
 - Create WORKSPACE.bazel
 - Import common used functions
-  
+
   ```bash
     load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
     load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
   ```
 
 - Import needed dependencies of Bazel project, eg. bazel python rules:
-  
+
   ```bash
     http_archive(
         name = "rules_python",
@@ -113,7 +113,7 @@ Options:
 
 - Import python dependencies into bazel [`WORKSPACE`](#set-up-bazel-workspace)
 - Create [`requirements.txt`](requirements.txt) to specify needed python packages
-  
+
   Unlike C/C++, all Python dependencies cannot be import into WORKSPACE directly, instead, they need to be imported through `requirements.txt`
 
 - Create an empty `requiremens_lock.txt` and add Bazel rule to update python requirements
@@ -129,7 +129,7 @@ Options:
   ```
 
 - Generate contents into [`requiremens_lock.txt`](requirements_lock.txt)
-  
+
   ```bash
     ./run py-deps
   ```
@@ -139,7 +139,7 @@ Options:
 Take cyclonedds for example:
 
 - Add external package into [`WORKSPACE`](WORKSPACE.bazel):
-  
+
   ```bazel
   http_archive(
     name = "cyclonedds",

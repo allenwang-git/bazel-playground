@@ -1,3 +1,4 @@
+---
 # Usage: ./run <task-name>
 # Options:
 #     --list    List all available tasks.
@@ -27,7 +28,8 @@ py-integ-test:
   - bazelisk test //python:integration-tests --test_output=all --cache_test_results=no
 
 py-cov:
-  - bazelisk coverage //python:unit-tests --combined_report=lcov --instrumentation_filter=/python --action_env=COVERAGE_GCOV_OPTIONS=-b
+  - bazelisk coverage //python:unit-tests
+    --combined_report=lcov --instrumentation_filter=/python --action_env=COVERAGE_GCOV_OPTIONS=-b
   - rm -rf coverage-genhtml-py 2>/dev/null
   # depends on lcov, the generated coverage report can be found in ./coverage-genhtml
   - genhtml --branch-coverage --output coverage-genhtml-py "$(bazel info output_path)/_coverage/_coverage_report.dat"
@@ -46,6 +48,9 @@ cc-pub:
 cc-sub:
   - bazelisk run //cc:cc_sub
 
+cc-test:
+  - bazelisk test //cc/... --test_output=all --cache_test_results=no
+
 cc-integ-test-py:
   - bazelisk test //cc:py-integration-tests --test_output=all --cache_test_results=no
 
@@ -59,9 +64,10 @@ cc-tar:
   - bazelisk build //pkg:cc_tar --//pkg:pkg_vars="0.0.1"
 
 cc-unit-test:
-- bazelisk test //cc:cc-unit-tests --test_output=all --cache_test_results=no
+  - bazelisk test //cc:cc-unit-tests --test_output=all --cache_test_results=no
 
 cc-cov:
-  - bazelisk coverage //cc:cc-unit-tests --combined_report=lcov --instrumentation_filter=cc --action_env=COVERAGE_GCOV_OPTIONS=-b
+  - bazelisk coverage //cc:cc-unit-tests
+    --combined_report=lcov --instrumentation_filter=cc --action_env=COVERAGE_GCOV_OPTIONS=-b
   - rm -rf coverage-genhtml-cc 2>/dev/null
   - genhtml --branch-coverage --output coverage-genhtml-cc "$(bazel info output_path)/_coverage/_coverage_report.dat"

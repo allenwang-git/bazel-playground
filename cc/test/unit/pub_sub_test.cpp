@@ -43,7 +43,7 @@ protected:
         dds::domain::DomainParticipant participant(org::eclipse::cyclonedds::domain::default_id());
         dds::topic::Topic<HelloWorldData::Msg> topic(participant, "HelloWorldData_Msg_cc");
         dds::sub::Subscriber subscriber(participant);
-        dds::sub::DataReader<HelloWorldData::Msg> reader(subscriber, topic);   
+        dds::sub::DataReader<HelloWorldData::Msg> reader(subscriber, topic);
 
         while (true) {
             dds::sub::LoanedSamples<HelloWorldData::Msg> samples;
