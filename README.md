@@ -18,8 +18,7 @@ bazel project to learn bazel ecosystem
 - pre-commit
 
   ```
-  sudo apt install python3-pip
-  pip install pre-commit
+  sudo apt install pre-commit
   ```
 
 ### Define Tasks
@@ -339,3 +338,8 @@ To package in Bazel, [rules_pkg](https://bazelbuild.github.io/rules_pkg) is need
 - To add more pre-commit-hooks: https://pre-commit.com/hooks.html
 
 - For more info about pre-commit tool: https://pre-commit.com/index.html
+
+
+## CI Workflow
+
+- Create github workflow

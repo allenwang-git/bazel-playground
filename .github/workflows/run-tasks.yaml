@@ -15,6 +15,7 @@ jobs:
     strategy:
       matrix:
         task: [
+          pre-commit,
           py-test,
           py-cov,
           cc-test,
@@ -33,11 +34,11 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
-          sudo apt install -y lcov &&
+          sudo apt install -y lcov pre-commit &&
           wget https://github.com/bazelbuild/bazelisk/releases/download/v1.23.0/bazelisk-amd64.deb &&
           sudo dpkg -i bazelisk-amd64.deb &&
           which bazelisk
 
       # Run tasks
-      - name: Run tests
+      - name: Run tasks
         run: ./run ${{ matrix.task }}
