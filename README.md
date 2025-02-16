@@ -342,4 +342,64 @@ To package in Bazel, [rules_pkg](https://bazelbuild.github.io/rules_pkg) is need
 
 ## CI Workflow
 
-- Create github workflow
+- Setup self-hosted CI runner, follow the instruction [here](https://github.com/allenwang-git/bazel-playground/settings/actions/runners)
+  - Start the runner with `./actions-runner/run.sh`
+  - Make sure the runner labels in workflow matche the runners
+
+- Create a new github workflow `./github/workflows/run-tasks.yaml`
+
+- Add trigger conditions for this workflow:
+
+  ```yaml
+  on:
+    push:
+      branches:
+        - main  # Trigger the workflow when pushing to the main branch
+    pull_request:
+      branches:
+        - main  # Also trigger on pull requests targeting main branch
+  ```
+  Reference: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow
+
+- Create a new job called `tasks` and set the runner labels to `[self-hosted, X64, Linux]` so that the workflow will run on self-hosted runners
+
+  ```yaml
+  jobs:
+    tasks:  # job id
+      runs-on: [self-hosted, X64, Linux]
+      strategy:
+        matrix:
+          task: [  # tasks to run, "task" here is a variable name
+            pre-commit,
+            py-test,
+            py-cov,
+            cc-test,
+            cc-cov,
+            cc-tar
+          ]
+        fail-fast: true  # job fails immediately if any task fails
+  ```
+
+- Define job steps:
+  ```yaml
+  steps:
+    # Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        clean: false  # clean is an env var used in actions/checkout@v3
+
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        sudo apt install -y lcov pre-commit &&
+        wget https://github.com/bazelbuild/bazelisk/releases/download/v1.23.0/bazelisk-amd64.deb &&
+        sudo dpkg -i bazelisk-amd64.deb &&
+        which bazelisk
+
+    # Run tasks
+    - name: Run tasks
+      run: ./run ${{ matrix.task }}
+  ```
+
+- Syntax of github workflow: https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions
