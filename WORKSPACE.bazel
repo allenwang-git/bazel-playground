@@ -80,3 +80,13 @@ http_archive(
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 
 rules_pkg_dependencies()
+
+
+# Gtest
+# https://google.github.io/googletest/
+http_archive(
+    name = "googletest",
+    sha256 = "7315acb6bf10e99f332c8a43f00d5fbb1ee6ca48c52f6b936991b216c586aaad",
+    strip_prefix = "googletest-1.15.0",
+    url = "https://github.com/google/googletest/releases/download/v1.15.0/googletest-1.15.0.tar.gz",
+)

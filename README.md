@@ -7,14 +7,20 @@ bazel project to learn bazel ecosystem
 ### Dependencies
 
 - [Bazel](#install-bazel)
-- lcov
-  
+- lcov (for genhtml)
+
   ```bash
   sudo apt install lcov
   ```
 
 - python 3.7+
 - cmake 3.16.0+
+- pre-commit
+
+  ```
+  sudo apt install python3-pip
+  pip install pre-commit
+  ```
 
 ### Define Tasks
 
@@ -170,7 +176,12 @@ For cc codes, defined `cc_test` targets, while for python codes, define `py_test
 
 - To calculate unit test coverage, use `bazelisk coverage //python/... <options>` or `bazelisk coverage //cc/... <options>`
 
+- To enable branch coverage, add this option `--action_env=COVERAGE_GCOV_OPTIONS=-b`.
+
 - To generate coverage report, use `genhtml` command.
+
+- There are multiple ways to run integration tests, tests written in Python, shell, or C/C++ languages can be run with `py_test`,
+  `sh_test` and `cc_test` respectively. Go to [cc/test/integration](./cc/test/integration/) for more details.
 
 ## Package Rules
 
@@ -256,3 +267,14 @@ To package in Bazel, [rules_pkg](https://bazelbuild.github.io/rules_pkg) is need
   ```bash
   bazelisk build //pkg:cc_tar --//pkg:pkg_vars=0.0.1
   ```
+
+## Pre-commit
+
+- To run pre-commit check:
+
+```bash
+./run pre-commit
+```
+- To add more pre-commit-hooks: https://pre-commit.com/hooks.html
+
+- For more info about pre-commit tool: https://pre-commit.com/index.html

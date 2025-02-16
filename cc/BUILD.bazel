@@ -41,7 +41,7 @@ cc_binary(
 
 cc_binary(
     name = "cc_sub",
-    srcs = ["sub.cpp"],
+    srcs = ["sub.cpp", "sub.hpp"],
     deps = [":cc_idl"],
     visibility = ["//visibility:public"],
 )
@@ -51,8 +51,8 @@ load("@python_deps//:requirements.bzl", "requirement")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 
 py_test(
-    name = "integration-tests",
-    srcs = glob(["test/integration/**"]),
+    name = "py-integration-tests",
+    srcs = glob(["test/integration/*.py"]),
     deps = [
         requirement("pytest"),
         requirement("pytest-timeout"),
@@ -68,4 +68,75 @@ py_test(
     main = "__init__.py",
     visibility = ["//visibility:public"],
 
+)
+
+# https://bazel.build/versions/6.5.0/reference/be/shell#sh_test
+sh_test(
+    name = "sh-integration-tests",
+    srcs = ["test/integration/sh_integration_test.sh"],
+    data = [
+        ":c_idl",
+        ":cc_idl",
+        ":c_sub",
+        ":c_pub",
+        ":cc_pub",
+        ":cc_sub",
+    ],
+    args = ["5"], # 10 seconds timeout
+    deps = ["@bazel_tools//tools/bash/runfiles"],
+    visibility = ["//visibility:public"], # bazel utils that required to run the test
+)
+
+cc_test(
+    name = "cc-integration-tests",
+    srcs = glob(["test/integration/*.cpp"]),
+    data = [
+        ":c_idl",
+        ":cc_idl",
+        ":c_sub",
+        ":c_pub",
+        ":cc_pub",
+        ":cc_sub",
+    ],
+    deps = [
+        "@bazel_tools//tools/cpp/runfiles",
+        "@googletest//:gtest_main",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+
+# Unit Test
+cc_library(
+    name = "cc_sub_lib",
+    hdrs = ["sub.hpp"],
+    deps = [
+        "cc_idl",
+        "@cyclonedds-cxx"
+    ],
+    # testonly = True,
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "cc_pub_lib",
+    hdrs = ["pub.hpp"],
+    deps = [
+        "cc_idl",
+        "@cyclonedds-cxx"
+    ],
+    # testonly = True,
+    visibility = ["//visibility:private"],
+)
+
+cc_test(
+    name = "cc-unit-tests",
+    srcs = glob(["test/unit/*.cpp"]),
+    deps = [
+        "cc_idl",
+        "cc_sub_lib",
+        "cc_pub_lib",
+        "@googletest//:gtest_main",
+    ],
+    visibility = ["//visibility:public"],
 )
