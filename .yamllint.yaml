@@ -8,6 +8,5 @@ rules:
     max: 120
     allow-non-breakable-inline-mappings: true
     allow-non-breakable-words: true
-  truthy: 
+  truthy:
     check-keys: false
-  
